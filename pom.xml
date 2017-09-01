@@ -26,6 +26,7 @@
 	<mysql.version>6.0.6</mysql.version>
 	<druid.version>1.0.29</druid.version>
 	<curator.recipes.version>4.0.0</curator.recipes.version>
+	<jsoup.version>1.10.3</jsoup.version>
   </properties>
 
   <dependencies>
