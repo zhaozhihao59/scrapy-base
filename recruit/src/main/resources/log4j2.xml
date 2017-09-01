@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" monitorInterval="60">
+    <properties>
+        <property name="LOG_FILE_PATH">D:/logs</property>
+        <property name="LOG_FILE_NAME">recruit</property>
+        <property name="LOG_LEVEL">info</property>
+        <property name="LOG_REMAIN">10</property>
+        
+        <property name="LOG_ENCODE">UTF-8</property>
+        <property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss} %5p %t [%C:%M:%L] - <![CDATA[<%m>]]>%n </property>
+        <property name="OUPPUT_FILENAME">${LOG_FILE_PATH}/${LOG_FILE_NAME}.log</property>
+        <property name="OUPPUT_PATTERN">${LOG_FILE_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.log.gz</property>
+    </properties>
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">  
+            <PatternLayout pattern="${LOG_PATTERN}" />
+        </Console>
+        <RollingFile name="OutputLog" fileName="${OUPPUT_FILENAME}" filePattern="${OUPPUT_PATTERN}">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="${LOG_ENCODE}" pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${LOG_FILE_PATH}" maxDepth="1">
+                    <IfFileName glob="${LOG_FILE_NAME}.*.log.gz"/>
+                    <IfLastModified age="${LOG_REMAIN}d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <Async name="AsyncLog" bufferSize="8192" blocking="false" includeLocation="true">
+            <appender-ref ref="OutputLog"/>
+        </Async>
+    </appenders>
+    <loggers>
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="AsyncLog"/>
+            <appender-ref ref="Console" />
+        </root>
+        <logger name="org.springframework" level="${LOG_LEVEL}"/>
+        <logger name="org.mybatis" level="${LOG_LEVEL}"/>
+    </loggers>
+</configuration>
+
