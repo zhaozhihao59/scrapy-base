@@ -87,6 +87,11 @@
 			<version>${httpcomponents.httpmime.version}</version>
 		</dependency>
 		<dependency>
+		    <groupId>org.apache.curator</groupId>
+		    <artifactId>curator-recipes</artifactId>
+		    <version>${curator.recipes.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>

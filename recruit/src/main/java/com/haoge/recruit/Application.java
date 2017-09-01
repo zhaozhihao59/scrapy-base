@@ -86,7 +86,6 @@ public class Application
 		RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
 		template.setConnectionFactory(redisConnectionFactory);
 		return template;
-		
 	}
 	
 	@Bean

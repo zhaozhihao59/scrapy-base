@@ -25,6 +25,7 @@
 	<mybatis.spring.boot>1.2.0</mybatis.spring.boot>
 	<mysql.version>6.0.6</mysql.version>
 	<druid.version>1.0.29</druid.version>
+	<curator.recipes.version>4.0.0</curator.recipes.version>
   </properties>
 
   <dependencies>
