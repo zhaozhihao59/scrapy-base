@@ -378,4 +378,15 @@ public class ZhaopinServiceImpl implements IZhaopinService{
 		
 	}
 
+	@Override
+	public void reloadRedis(List<Zhaopin> result) {
+		for (Zhaopin item : result) {
+			String key = item.getCity() + item.getCompanyName() + item.getWorke() + item.getMoneyStart() + item.getMoneyEnd() + item.getPublishTime();
+			key = DigestUtils.md5Hex(key);
+			if(!redisTemplate.hasKey(key)){
+				redisTemplate.opsForValue().set(key,1);
+			}
+		}
+	}
+
 }

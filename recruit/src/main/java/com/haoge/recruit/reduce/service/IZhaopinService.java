@@ -65,4 +65,6 @@ public interface IZhaopinService{
 
 	void loadNetData(String url, String proxyIp) throws Exception;
 
+	void reloadRedis(List<Zhaopin> result);
+
 }

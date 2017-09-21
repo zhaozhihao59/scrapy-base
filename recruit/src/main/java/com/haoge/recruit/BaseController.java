@@ -40,12 +40,18 @@ public class BaseController {
 		return "ok";
 	}
 	
-	@RequestMapping(value = "/reloadRedis",method = RequestMethod.POST)
+	@RequestMapping(value = "/reloadRedis",method = RequestMethod.GET)
 	@ResponseBody
 	public String reloadRedis(){
 		ZhaopinDto condition = new ZhaopinDto();
-		int count = zhaopinService.getZhaopinByPageCount(condition);
-		
+		condition.getPageResult().setPageSize(500);
+		zhaopinService.listZhaopinByPage(condition.getPageResult(), condition);
+		zhaopinService.reloadRedis(condition.getPageResult().getResult());
+		for (int i = 2; i <= condition.getPageResult().getAllPages(); i++) {
+			condition.getPageResult().setCurrentPage(i);
+			zhaopinService.listZhaopinByPage(condition.getPageResult(), condition);
+			zhaopinService.reloadRedis(condition.getPageResult().getResult());
+		}
 		return "ok";
 	}
 	
