@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haoge.recruit.reduce.dao.IZhaopinDao">
+	<resultMap type="com.haoge.recruit.reduce.entity.Zhaopin" id="zhaopinResultMap" >
+		<!-- id -->
+		<result property="id" column="id" />
+		<!-- 公司名 -->
+		<result property="companyName" column="company_name" />
+		<!-- 单位元 -->
+		<result property="moneyStart" column="money_start" />
+		<!-- 单位元 -->
+		<result property="moneyEnd" column="money_end" />
+		<!-- 学历 -->
+		<result property="education" column="education" />
+		<!-- 发布时间 -->
+		<result property="publishTime" column="publish_time" />
+		<!-- 岗位名称 -->
+		<result property="worke" column="worke" />
+		<!-- 城市 -->
+		<result property="city" column="city" />
+		<!-- 区 -->
+		<result property="district" column="district" />
+		<!-- 工龄 -->
+		<result property="workeAge" column="worke_age" />
+		<!-- 公司类型 -->
+		<result property="companyType" column="company_type" />
+		<!-- 公司介绍 -->
+		<result property="industry" column="industry" />
+		<!-- 吸引力 -->
+		<result property="attractive" column="attractive" />
+		<!-- 公司规模 -->
+		<result property="companyScale" column="company_scale" />
+	</resultMap>
+
+
+	<sql id="allColumnSql">
+		o.id,
+		o.company_name,
+		o.money_start,
+		o.money_end,
+		o.education,
+		o.publish_time,
+		o.worke,
+		o.city,
+		o.district,
+		o.worke_age,
+		o.company_type,
+		o.industry,
+		o.attractive,
+		o.company_scale
+	</sql>
+
+
+	<sql id="searchConditionSql">
+		<if test="condition.companyName != null and condition.companyName != ''">
+			AND o.company_name like '%${condition.companyName}%'
+		</if>
+		<if test="condition.education != null and condition.education != ''">
+			AND o.education like '%${condition.education}%'
+		</if>
+		<if test="condition.worke != null and condition.worke != ''">
+			AND o.worke like '%${condition.worke}%'
+		</if>
+		<if test="condition.city != null and condition.city != ''">
+			AND o.city like '%${condition.city}%'
+		</if>
+		<if test="condition.district != null and condition.district != ''">
+			AND o.district like '%${condition.district}%'
+		</if>
+		<if test="condition.workeAge != null and condition.workeAge != ''">
+			AND o.worke_age like '%${condition.workeAge}%'
+		</if>
+		<if test="condition.companyType != null and condition.companyType != ''">
+			AND o.company_type like '%${condition.companyType}%'
+		</if>
+		<if test="condition.industry != null and condition.industry != ''">
+			AND o.industry like '%${condition.industry}%'
+		</if>
+		<if test="condition.attractive != null and condition.attractive != ''">
+			AND o.attractive like '%${condition.attractive}%'
+		</if>
+	</sql>
+
+	<select id="listZhaopinAll" resultMap="zhaopinResultMap">
+		SELECT <include refid="allColumnSql"/>
+		FROM zhaopin o
+	</select>
+
+	<select id="getZhaopinByPageCount" resultType="int">
+		SELECT count(1)
+		FROM zhaopin o
+		WHERE 1=1 <include refid="searchConditionSql"/>
+	</select>
+
+	<select id="listZhaopinByPage" resultMap="zhaopinResultMap">
+		SELECT <include refid="allColumnSql"/>
+		FROM zhaopin o
+		WHERE 1=1 <include refid="searchConditionSql"/>
+	</select>
+
+	<select id="getZhaopinById" resultMap="zhaopinResultMap">
+		SELECT <include refid="allColumnSql"/>
+		FROM zhaopin o
+		WHERE o.ID = #{id}
+	</select>
+
+	<insert id="add" parameterType="com.haoge.recruit.reduce.entity.Zhaopin" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO zhaopin
+		(
+		<trim suffixOverrides=",">
+		<if test="companyName != null ">
+		company_name,
+		</if>
+		<if test="moneyStart != null ">
+		money_start,
+		</if>
+		<if test="moneyEnd != null ">
+		money_end,
+		</if>
+		<if test="education != null ">
+		education,
+		</if>
+		<if test="publishTime != null ">
+		publish_time,
+		</if>
+		<if test="worke != null ">
+		worke,
+		</if>
+		<if test="city != null ">
+		city,
+		</if>
+		<if test="district != null ">
+		district,
+		</if>
+		<if test="workeAge != null ">
+		worke_age,
+		</if>
+		<if test="companyType != null ">
+		company_type,
+		</if>
+		<if test="industry != null ">
+		industry,
+		</if>
+		<if test="attractive != null ">
+		attractive,
+		</if>
+		<if test="companyScale != null ">
+		company_scale,
+		</if>
+		</trim>
+		)
+		VALUES
+		(
+		<trim suffixOverrides=",">
+		<if test="companyName != null ">
+		#{companyName},
+		</if>
+		<if test="moneyStart != null ">
+		#{moneyStart},
+		</if>
+		<if test="moneyEnd != null ">
+		#{moneyEnd},
+		</if>
+		<if test="education != null ">
+		#{education},
+		</if>
+		<if test="publishTime != null ">
+		#{publishTime},
+		</if>
+		<if test="worke != null ">
+		#{worke},
+		</if>
+		<if test="city != null ">
+		#{city},
+		</if>
+		<if test="district != null ">
+		#{district},
+		</if>
+		<if test="workeAge != null ">
+		#{workeAge},
+		</if>
+		<if test="companyType != null ">
+		#{companyType},
+		</if>
+		<if test="industry != null ">
+		#{industry},
+		</if>
+		<if test="attractive != null ">
+		#{attractive},
+		</if>
+		<if test="companyScale != null ">
+		#{companyScale},
+		</if>
+		</trim>
+		)
+	</insert>
+
+	<insert id="batchInsert" >
+		INSERT INTO zhaopin
+		(
+		company_name,
+		money_start,
+		money_end,
+		education,
+		publish_time,
+		worke,
+		city,
+		district,
+		worke_age,
+		company_type,
+		industry,
+		attractive,
+		company_scale
+		)
+		VALUES
+		<foreach collection="list" index="index" item="item" separator=",">
+		(
+		#{item.companyName},
+		#{item.moneyStart},
+		#{item.moneyEnd},
+		#{item.education},
+		#{item.publishTime},
+		#{item.worke},
+		#{item.city},
+		#{item.district},
+		#{item.workeAge},
+		#{item.companyType},
+		#{item.industry},
+		#{item.attractive},
+		#{item.companyScale}
+		)
+		</foreach>
+	</insert>
+
+	<update id="update" parameterType="com.haoge.recruit.reduce.entity.Zhaopin">
+		UPDATE zhaopin
+		<trim prefix="set" suffixOverrides=",">
+		<if test="companyName != null ">
+		company_name = #{companyName},
+		</if>
+		<if test="moneyStart != null ">
+		money_start = #{moneyStart},
+		</if>
+		<if test="moneyEnd != null ">
+		money_end = #{moneyEnd},
+		</if>
+		<if test="education != null ">
+		education = #{education},
+		</if>
+		<if test="publishTime != null ">
+		publish_time = #{publishTime},
+		</if>
+		<if test="worke != null ">
+		worke = #{worke},
+		</if>
+		<if test="city != null ">
+		city = #{city},
+		</if>
+		<if test="district != null ">
+		district = #{district},
+		</if>
+		<if test="workeAge != null ">
+		worke_age = #{workeAge},
+		</if>
+		<if test="companyType != null ">
+		company_type = #{companyType},
+		</if>
+		<if test="industry != null ">
+		industry = #{industry},
+		</if>
+		<if test="attractive != null ">
+		attractive = #{attractive},
+		</if>
+		<if test="companyScale != null ">
+		company_scale = #{companyScale},
+		</if>
+		</trim>
+		WHERE ID = #{id}
+	</update>
+
+	<delete id="delByIds">
+		DELETE FROM zhaopin
+		WHERE ID IN
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+</mapper>

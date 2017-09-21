@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,9 +42,9 @@ public class HttpUtil {
 	 * @param url
 	 * @return
 	 */
-	public static String loadContentByGetMethod(String url,List<Header> headers) throws Exception{
+	public static String loadContentByGetMethod(String url,String proxyIp) throws Exception{
 		String result = null;
-//		HttpClient httpClient = HttpClients.createDefault();
+		HttpClient httpClient = HttpClients.createDefault();
 		/* 1 生成 HttpClinet 对象并设置参数 */
 		// 设置 Http 连接超时为10秒
 //		httpClient.
@@ -55,11 +54,14 @@ public class HttpUtil {
 		HttpGet getMethod = new HttpGet(url);
 		try {
 //			getMethod.setURI(URI.create(url));
-			for (Header header : headers) {
+			for (Header header : headerList) {
 				getMethod.addHeader(header);
 			}
+//			String ipAddress = proxyIp.split(":")[0];
+//			Integer port = Integer.parseInt(proxyIp.split(":")[1]);
 			
 			// 设置 get 请求超时为 10 秒
+//			HttpHost proxy = new HttpHost(ipAddress,port,"http");
 			RequestConfig requestConfig = RequestConfig.custom().build();
 			getMethod.setConfig(requestConfig);
 			
@@ -67,7 +69,7 @@ public class HttpUtil {
 			// 设置请求重试处理，用的是默认的重试处理：请求三次
 //			getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,new DefaultHttpMethodRetryHandler(3,true));
 			/* 3 执行 HTTP GET 请求 */
-			 HttpResponse statusResponse = threadClients.get().execute(getMethod);
+			 HttpResponse statusResponse = httpClient.execute(getMethod);
 			/* 4 判断访问的状态码 */
 			if (statusResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 				getMethod.releaseConnection();
@@ -169,30 +171,35 @@ public class HttpUtil {
 		headerList.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"));
 		headerList.add(new BasicHeader("Connection", "keep-alive"));
 		headerList.add(new BasicHeader("authorization", "oauth c3cef7c66a1843f8b3a9e6a1e3160e20"));
+		headerList.add(new BasicHeader("Accept-Encoding", "gzip"));
+//		headerList.add(new BasicHeader("Cookie", "user_trace_token=20170814171635-453670d0-80d1-11e7-b16d-525400f775ce; LGUID=20170814171635-453675e0-80d1-11e7-b16d-525400f775ce; index_location_city=%E5%85%A8%E5%9B%BD; TG-TRACK-CODE=index_navigation; JSESSIONID=ABAAABAAAGFABEFD45CF7E8C9155AC585AEE336AAF80A37; SEARCH_ID=f9c20011fcfa4452b56ec23320bfb415; _ga=GA1.2.1628235613.1502702198; _gat=1; Hm_lvt_4233e74dff0ae5bd0a3d81c6ccf756e6=1504260659,1505439818,1505440649,1505443569; Hm_lpvt_4233e74dff0ae5bd0a3d81c6ccf756e6=1505467485; LGSID=20170915172442-b48b3d1d-99f7-11e7-9193-5254005c3644; PRE_UTM=; PRE_HOST=; PRE_SITE=; PRE_LAND=https%3A%2F%2Fwww.lagou.com%2Fzhaopin%2FJava%2F1%2F; LGRID=20170915172442-b48b3edd-99f7-11e7-9193-5254005c3644"));
 	}
 	public static void main(String[] args) throws Exception {
-		List<String> list = new ArrayList<>();
-		list.add("miao-ying");
-		list.add("ku-rong-53-87");
-		list.add("dao-sen-sen");
-		list.add("hua-zhuo-53");
-		list.add("yin-jiao-shou-32");
-		list.add("ling-hu-fu-gui");
-		list.add("cai-tong");
-		list.add("libiubiu");
-		list.add("xu-zhi-ting-21");
-		list.add("liu-xiao-liu-9-24");
-		list.add("ikaros_kirishima");
-		list.add("i-li-si-hua-mao-zi");
-		list.add("i-li-si-hua-mao-zi");
-		for (int i = 0; i < 20; i++) {
-			String url = "https://www.zhihu.com/api/v4/members/"+list.get(new Random().nextInt(list.size()))+"?include=locations%2Cemployments%2Cgender%2Ceducations%2Cbusiness%2Cvoteup_count%2Cthanked_Count%2Cfollower_count%2Cfollowing_count%2Ccover_url%2Cfollowing_topic_count%2Cfollowing_question_count%2Cfollowing_favlists_count%2Cfollowing_columns_count%2Cavatar_hue%2Canswer_count%2Carticles_count%2Cpins_count%2Cquestion_count%2Ccolumns_count%2Ccommercial_question_count%2Cfavorite_count%2Cfavorited_count%2Clogs_count%2Cmarked_answers_count%2Cmarked_answers_text%2Cmessage_thread_token%2Caccount_status%2Cis_active%2Cis_bind_phone%2Cis_force_renamed%2Cis_bind_sina%2Cis_privacy_protected%2Csina_weibo_url%2Csina_weibo_name%2Cshow_sina_weibo%2Cis_blocking%2Cis_blocked%2Cis_following%2Cis_followed%2Cmutual_followees_count%2Cvote_to_count%2Cvote_from_count%2Cthank_to_count%2Cthank_from_count%2Cthanked_count%2Cdescription%2Chosted_live_count%2Cparticipated_live_count%2Callow_message%2Cindustry_category%2Corg_name%2Corg_homepage%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics";
-			
-			long start = System.currentTimeMillis();
-			System.out.println(loadContentByGetMethod(url, headerList));
-			long end = System.currentTimeMillis();
-			System.out.println((end-start));
-		}
+//		List<String> list = new ArrayList<>();
+//		list.add("miao-ying");
+//		list.add("ku-rong-53-87");
+//		list.add("dao-sen-sen");
+//		list.add("hua-zhuo-53");
+//		list.add("yin-jiao-shou-32");
+//		list.add("ling-hu-fu-gui");
+//		list.add("cai-tong");
+//		list.add("libiubiu");
+//		list.add("xu-zhi-ting-21");
+//		list.add("liu-xiao-liu-9-24");
+//		list.add("ikaros_kirishima");
+//		list.add("i-li-si-hua-mao-zi");
+//		list.add("i-li-si-hua-mao-zi");
+//		for (int i = 0; i < 20; i++) {
+//			String url = "https://www.zhihu.com/api/v4/members/"+list.get(new Random().nextInt(list.size()))+"?include=locations%2Cemployments%2Cgender%2Ceducations%2Cbusiness%2Cvoteup_count%2Cthanked_Count%2Cfollower_count%2Cfollowing_count%2Ccover_url%2Cfollowing_topic_count%2Cfollowing_question_count%2Cfollowing_favlists_count%2Cfollowing_columns_count%2Cavatar_hue%2Canswer_count%2Carticles_count%2Cpins_count%2Cquestion_count%2Ccolumns_count%2Ccommercial_question_count%2Cfavorite_count%2Cfavorited_count%2Clogs_count%2Cmarked_answers_count%2Cmarked_answers_text%2Cmessage_thread_token%2Caccount_status%2Cis_active%2Cis_bind_phone%2Cis_force_renamed%2Cis_bind_sina%2Cis_privacy_protected%2Csina_weibo_url%2Csina_weibo_name%2Cshow_sina_weibo%2Cis_blocking%2Cis_blocked%2Cis_following%2Cis_followed%2Cmutual_followees_count%2Cvote_to_count%2Cvote_from_count%2Cthank_to_count%2Cthank_from_count%2Cthanked_count%2Cdescription%2Chosted_live_count%2Cparticipated_live_count%2Callow_message%2Cindustry_category%2Corg_name%2Corg_homepage%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics";
+//			
+//			long start = System.currentTimeMillis();
+//			System.out.println(loadContentByGetMethod(url, headerList));
+//			long end = System.currentTimeMillis();
+//			System.out.println((end-start));
+//		}
 		
+		String url = "https://www.lagou.com/zhaopin/Java/1";
+		String proxyIp = "118.117.137.217:9000";
+	 	System.out.println(loadContentByGetMethod(url, proxyIp));;
 	}
 }

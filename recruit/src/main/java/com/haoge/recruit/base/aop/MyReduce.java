@@ -13,4 +13,6 @@ public @interface MyReduce {
 	String key();
 	
 	String cacheName();
+	
+	Class<?> targetClass();
 }

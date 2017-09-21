@@ -24,8 +24,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
- * Hello world!
- *
+ * 
+ * @author zhaozhihao
+ * @createTime 2017年9月20日 上午11:19:21	
+ * @version 1.0
  */
 @SpringBootApplication
 @Configuration
@@ -41,10 +43,8 @@ public class Application
 	@Bean
 	public Executor myExecutor(){
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(1);
-//		env.getProperty("poolSize",Integer.class)
-//		env.getProperty("maxPoolSize",Integer.class)
-		executor.setMaxPoolSize(1);
+		executor.setCorePoolSize(env.getProperty("poolSize",Integer.class));
+		executor.setMaxPoolSize(env.getProperty("maxPoolSize",Integer.class));
 		executor.initialize();
 		return executor;
 	}
@@ -72,8 +72,8 @@ public class Application
 	
 	
 	@Bean
-	public JedisConnectionFactory redisConnectionFactory(JedisPoolConfig poolConfig,RedisClusterConfiguration redisClusterConfiguration){
-		JedisConnectionFactory factory = new JedisConnectionFactory(redisClusterConfiguration,poolConfig);
+	public JedisConnectionFactory redisConnectionFactory(JedisPoolConfig poolConfig){
+		JedisConnectionFactory factory = new JedisConnectionFactory();
 		factory.setTimeout(env.getProperty("redis.timeout", Integer.class));
 		factory.setHostName(env.getProperty("redis.host", String.class));
 		factory.setPort(env.getProperty("redis.port", Integer.class));
@@ -87,7 +87,7 @@ public class Application
 		template.setConnectionFactory(redisConnectionFactory);
 		return template;
 	}
-	
+//	
 	@Bean
 	public RedisCacheManager cacheManager(RedisTemplate<String, Object> redisTemplate){
 		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);

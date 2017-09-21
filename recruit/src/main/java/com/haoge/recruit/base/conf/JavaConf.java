@@ -22,15 +22,13 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 @EnableAutoConfiguration
 @Configuration
-@ComponentScan("com.revanow")
+@ComponentScan("com.haoge")
 @PropertySource(value = {"classpath:appconfig.properties","classpath:redis.properties"},ignoreResourceNotFound = true)
 @EnableTransactionManagement
 public class JavaConf {
 	
 	@Autowired
 	private Environment  env;
-	@Value("${jdbc.url}")
-	private String url;
 	
 	@Bean(name = "dataSource",initMethod = "init" , destroyMethod = "close")
 	public DruidDataSource dataSource() throws SQLException{
@@ -59,8 +57,7 @@ public class JavaConf {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		sqlSessionFactoryBean.setConfigLocation(resolver.getResource("classpath:sqlmap-config.xml"));
-		sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath*:com/hao/**/mapper/*.xml"));
+		sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath*:com/haoge/**/mapper/*.xml"));
 		
 		return sqlSessionFactoryBean;
 	}
