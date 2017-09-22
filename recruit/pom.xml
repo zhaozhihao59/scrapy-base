@@ -104,4 +104,7 @@
 			<scope>test</scope>
 		</dependency>
   </dependencies>
+  <build>
+  	<finalName>recruit</finalName>
+  </build>
 </project>
