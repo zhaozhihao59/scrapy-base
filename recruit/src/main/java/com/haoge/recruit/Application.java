@@ -5,6 +5,12 @@ import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.NodeCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache.StartMode;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.CreateMode;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -20,6 +26,9 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import com.haoge.recruit.base.listener.NodeDataListener;
+import com.haoge.recruit.base.listener.ZkListener;
 
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -92,6 +101,27 @@ public class Application
 	public RedisCacheManager cacheManager(RedisTemplate<String, Object> redisTemplate){
 		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
 		return cacheManager;
+	}
+	@Bean
+	public CuratorFramework curatorFramework(){
+		CuratorFramework client = CuratorFrameworkFactory.newClient(env.getProperty("zk.server"), new ExponentialBackoffRetry(1000, 3));
+		client.start();
+		return client;
+	}
+	@Bean
+	public ZkListener zkListener(CuratorFramework curatorFramework) throws Exception{
+		ZkListener zk = new ZkListener(curatorFramework, env.getProperty("zk.leaderPath"));
+		zk.start();
+		String path = curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(env.getProperty("zk.dataPath") + "/child","1".getBytes());
+		zk.getLeaderSelector().setId(path);
+		return zk;
+	}
+	@Bean
+	public NodeCache nodeCache(ZkListener zkListener,CuratorFramework curatorFramework,NodeDataListener listener) throws Exception{
+		NodeCache watch = new NodeCache(curatorFramework, zkListener.getLeaderSelector().getId(),false);
+		watch.getListenable().addListener(listener);
+		watch.start();
+		return watch;
 	}
 	
     public static void main( String[] args )

@@ -9,7 +9,9 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 
+@Component
 public class InitListener implements ApplicationListener<ContextRefreshedEvent>{
 
 	@Value("${zk.leaderPath}")
@@ -20,17 +22,6 @@ public class InitListener implements ApplicationListener<ContextRefreshedEvent>{
 	private Integer port;
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		CuratorFramework client = CuratorFrameworkFactory.newClient(server, new ExponentialBackoffRetry(1000, 3));
-		client.start();
-		String name = "";
-		try {
-			name = InetAddress.getLocalHost().getHostAddress() + port;
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ZkListener zkListener = new ZkListener(client, path,name);
-		zkListener.start();
 		
 	}
 
